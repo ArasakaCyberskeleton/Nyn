@@ -35,6 +35,7 @@ func evilFog() {
 }
 
 func grabWP() bool {
+	// RETURN TRUE FOR WP DISABLED(0) FALSE FOR ANY OTHER VALUE IT RETURNS FALSE
 	cmd := exec.Command("crossystem", "wpsw_cur") // if i had one wish id bring my dog baack :pray:
 	out, err := cmd.Output()
 	if err != nil {
@@ -43,7 +44,7 @@ func grabWP() bool {
 	blackout := strings.TrimSpace(string(out)) // trims whitespace
 	value, err := strconv.Atoi(blackout)       //int conversion
 	if err != nil {
-		log.Printf("Error with strconv.Atoi(blackout)")
+		log.Printf("Error with strconv.Atoi(blackout) idfk what caused this lowkrey")
 	}
 
 	if value == 0 {
@@ -63,21 +64,42 @@ func goodFog() {
 }
 
 func main() {
-	wp := grabWP()
-
+	wp := true //grabWP()
 	Logo()
-	options(wp)
+	choice := options(wp)
+	modularity(choice)
 
 }
 
-func options(wp bool) {
-	fmt.Println("Hello! welcome to Nyn!\n What tool would you like to use!\n WP DISABLED?: ", wp)
+func options(wp bool) int {
+
+	fmt.Println("Hello! welcome to Nyn!\nWhat tool would you like to use!		WP DISABLED?:", wp)
 	if wp { //wp == true idk how this even works lowkey
-		fmt.Printf("Defog (1) \n GrabVPD (2) \n \"Re enroll\" (set enrollment) (3)")
+		fmt.Printf(" Defog (1)		GrabVPD (2)		\"Re enroll\" (set enrollment) (3)")
 	} else {
-		fmt.Printf(Red + "Defog (1)" + Normal + " \n GrabVPD (2) \n \"Re enroll\" (set enrollment) (3)")
+		fmt.Printf(Red + "Defog (1)" + Normal + "		GrabVPD (2)		Re enroll (set enrollment) (3)")
 	}
-	fmt.Println("")
+	fmt.Println("\nInput text! (Single number):")
+	var choice int
+	_, err := fmt.Scanf("%d", &choice)
+	if err != nil {
+		log.Fatalf("DUMBASS INVALID INPUT! (or something went REALLY bad), %v", err)
+		return -67
+	}
+	return choice
+}
+
+func modularity(choice int) { // im going fucking insane oh my god dddddd
+	switch choice {
+	case 1:
+		// i sleep but bascially make this go down a for or switch that will basciaslly record the GBB you would like to use and then blow your shit out
+	case 2:
+		fmt.Printf("5")
+	case 3:
+		fmt.Printf("5")
+	default:
+		log.Fatal("my code blew up i think...")
+	}
 }
 
 func Logo() {
