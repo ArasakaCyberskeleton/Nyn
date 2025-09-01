@@ -83,7 +83,7 @@ func options(wp bool) int {
 	var choice int
 	_, err := fmt.Scanf("%d", &choice)
 	if err != nil {
-		log.Fatalf("DUMBASS INVALID INPUT! (or something went REALLY bad), %v", err)
+		log.Fatalf("DUMBASS INVALID INPUT, %v", err)
 		return -67
 	}
 	return choice
@@ -98,7 +98,7 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 	case 3:
 		fmt.Printf("5")
 	default:
-		log.Fatal("my code blew up i think...")
+		log.Fatal("you did something bad or i did something REALLY bad (report if you entered valid options without space or newline)")
 	}
 }
 
