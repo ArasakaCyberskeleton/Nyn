@@ -42,6 +42,9 @@ func grabWP() bool {
 	}
 	blackout := strings.TrimSpace(string(out)) // trims whitespace
 	value, err := strconv.Atoi(blackout)       //int conversion
+	if err != nil {
+		log.Printf("Error with strconv.Atoi(blackout)")
+	}
 
 	if value == 0 {
 		return true
@@ -69,7 +72,7 @@ func main() {
 
 func options(wp bool) {
 	fmt.Println("Hello! welcome to Nyn!\n What tool would you like to use!\n WP DISABLED?: ", wp)
-	if wp == true {
+	if wp { //wp == true idk how this even works lowkey
 		fmt.Printf("Defog (1) \n GrabVPD (2) \n \"Re enroll\" (set enrollment) (3)")
 	} else {
 		fmt.Printf(Red + "Defog (1)" + Normal + " \n GrabVPD (2) \n \"Re enroll\" (set enrollment) (3)")
