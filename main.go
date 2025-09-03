@@ -82,7 +82,7 @@ func Reprovision4cheap(gbbreset bool) {
 }
 
 func main() {
-	wp := grabWP()
+	wp := true //grabWP()
 	Logo()
 	choice := options(wp)
 	modularity(choice)
@@ -136,14 +136,14 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 
 	case 2:
 		var input string
-		fmt.Printf(Red + "THIS WILL RE-ENROLL YOUR CHROMEBOOK\n DO YOU WANT TO COUNTINE?")
+		fmt.Printf(Red + "THIS WILL RE-ENROLL YOUR CHROMEBOOK\n DO YOU WANT TO COUNTINE?" + Normal)
 		_, err := fmt.Scanln(&input)
 		if err != nil {
 			log.Fatalf("something went wrong!%v ", err)
 		}
 		processedInput := strings.ToLower(strings.TrimSpace(input))
 		if processedInput == "y" {
-			fmt.Printf("Would you like to reset GBB flags to 0x0?")
+			fmt.Printf(Normal + "Would you like to reset GBB flags to 0x0?" + Normal)
 
 			var input1 string
 			_, err := fmt.Scanln(&input1)
