@@ -77,12 +77,14 @@ func Reprovision4cheap(gbbreset bool) {
 	cmd5.Run()
 	if gbbreset {
 		gbbnew.Run()
+		fmt.Println("GBB SET 0x0 you are now re enrolled.")
 	} else {
+		fmt.Println("Should be re enrolled!")
 	}
 }
 
 func main() {
-	wp := true //grabWP()
+	wp := grabWP()
 	Logo()
 	choice := options(wp)
 	modularity(choice)
@@ -112,7 +114,7 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 	case 1:
 		fmt.Printf("Welcome to defogging! This will not fully work if your WP is enabled. \nThis will set gbb flags and among things.")
 		var choice1 int
-		fmt.Printf("Choose a GBB\n		1. 0x8031\n		2. 0x80b1\n		3. 0x8091(not suggested)\n		4. Custom GBB")
+		fmt.Printf("Choose a GBB\n		1. 0x8031\n		2. 0x80b1\n		3. 0x8091(not suggested)\n		4. Custom GBB\n(0-4): ")
 		_, err := fmt.Scanln(&choice1)
 		if err != nil {
 			log.Fatalf("DUMBASS INVALID INPUT, %v", err)
@@ -125,25 +127,27 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 		case 3:
 			defog("8091")
 		case 4:
-			fmt.Printf(Red + "ALL INPUT IS UNCHECKED DOUBLE CHECK YOUR ANSWER!\n" + "DO NOT INCLUDE 0x ONLY HEX ie 8031" + Normal + "Custom GBB flag:")
+			fmt.Printf(Red + "ALL INPUT IS UNCHECKED DOUBLE CHECK YOUR ANSWER!\n" + "DO NOT INCLUDE 0x ONLY HEX ie 8031" + Normal + "\nCustom GBB flag: ")
 			var choice2 string
 			_, err := fmt.Scanln(&choice2)
 			if err != nil {
 				log.Fatalf("damn idfk%v", err)
 			}
 			defog(choice2)
+		default:
+			log.Fatalf("Something went wrong! Or your stupid and entered a invalid input.")
 		}
 
 	case 2:
 		var input string
-		fmt.Printf(Red + "THIS WILL RE-ENROLL YOUR CHROMEBOOK\n DO YOU WANT TO COUNTINE?" + Normal)
+		fmt.Printf(Red + "THIS WILL RE-ENROLL YOUR CHROMEBOOK\n DO YOU WANT TO COUNTINE?\n(y-n): " + Normal)
 		_, err := fmt.Scanln(&input)
 		if err != nil {
 			log.Fatalf("something went wrong!%v ", err)
 		}
 		processedInput := strings.ToLower(strings.TrimSpace(input))
 		if processedInput == "y" {
-			fmt.Printf(Normal + "Would you like to reset GBB flags to 0x0?" + Normal)
+			fmt.Printf(Normal + "Would you like to reset GBB flags to 0x0?\n(y-n): " + Normal)
 
 			var input1 string
 			_, err := fmt.Scanln(&input1)
@@ -157,6 +161,8 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 			switch processedInput1 {
 			case "y":
 				Reprovision4cheap(true)
+			case "n":
+				Reprovision4cheap(false)
 			}
 
 		} else {
