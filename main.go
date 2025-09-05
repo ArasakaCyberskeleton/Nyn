@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -87,7 +89,7 @@ func main() {
 	wp := grabWP()
 	Logo()
 	choice := options(wp)
-	modularity(choice)
+	modularity(choice, wp) // holy modular chat is this modular on a scale of whole chromeos in a single file to modular how modular is this is this modular enough?
 
 }
 
@@ -95,7 +97,7 @@ func options(wp bool) int {
 
 	fmt.Println("Hello! welcome to Nyn!\nWhat tool would you like to use!		WP DISABLED?:", wp)
 	if wp { //wp == true idk how this even works lowkey
-		fmt.Printf(" Defog (1)		\"Re enroll\" (set enrollment) (2)		GrabVPD (3)")
+		fmt.Printf(" Defog (1)		\"Re enroll\" (set enrollment) (2)		Vital Product Data General (3)")
 	} else {
 		fmt.Printf(Red + "Defog (1)" + Normal + "		GrabVPD (2)		Re enroll (set enrollment) (3)")
 	}
@@ -109,7 +111,7 @@ func options(wp bool) int {
 	return choice
 }
 
-func modularity(choice int) { // im going fucking insane oh my god dddddd
+func modularity(choice int, wp bool) { // im going fucking insane oh my god dddddd
 	switch choice {
 	case 1:
 		fmt.Printf("Welcome to defogging! This will not fully work if your WP is enabled. \nThis will set gbb flags and among things.")
@@ -170,9 +172,70 @@ func modularity(choice int) { // im going fucking insane oh my god dddddd
 		}
 
 	case 3:
-		grabVPD()
+
+		if wp { //wp == true idk how this even works lowkey
+			fmt.Printf(" Change Secret (1)		Change SN (2)		Vital Product Data General (3)")
+		} else {
+			fmt.Printf(Red + "Change Secret (1) " + Normal + "		Change SN (2)		Vital Product Data General (3) ")
+		}
+		fmt.Println("\nInput text! (Single number):")
+
+		var choice2 int
+		_, err := fmt.Scanln(&choice2)
+		if err != nil {
+			log.Fatalf("DUMBASS INVALID INPUT, %v", err)
+		}
+
+		switch choice2 {
+		case 1:
+			fmt.Printf("Are you sure you want to change your secret?\n This is a serious action that can seriously effect your chromebook!\nit is HIGHLEY suggested you run vpd -l and take a picture incase your info gets corrupted.\n(y-n):  ")
+			var choice string
+			_, err := fmt.Scanln(&choice)
+			if err != nil {
+				log.Fatalf("DUMBASS INVALID INPUT, %v", err)
+			}
+			if choice == "y" {
+				newsecret := make([]byte, 32) // fatass 256 bit fattty
+				_, err := rand.Read(newsecret)
+				if err != nil {
+					log.Panicf("what the fuck happened like ACTUALLY %v", err)
+					log.Fatalf("")
+				}
+				if err != nil {
+					log.Panicf("VPD FAILED LISTING YOUR SECRET:", err)
+					log.Fatalf("")
+				}
+				cmd := exec.Command("vpd", "-g", "stable_device_secret_DO_NOT_SHARE")
+				output, _ := cmd.Output()
+				oldsecret := strings.TrimSpace(string(output))
+
+				secretHex := hex.EncodeToString(newsecret)
+
+				fmt.Printf("Your current secret pre change is PLEASE SAVE!: %s", oldsecret)
+				time.Sleep(2 * time.Second)
+				fmt.Printf("Your current secret pre change is PLEASE SAVE!: %s", oldsecret)
+				time.Sleep(2 * time.Second)
+				fmt.Printf("Your current secret pre change is PLEASE SAVE!: %s", oldsecret)
+				time.Sleep(time.Second)
+				fmt.Printf("New secret (hex): %s", secretHex)
+				writeCmd := exec.Command("sudo", "vpd", "-i", "RO_VPD", "-s", fmt.Sprintf("stable_device_secret_DO_NOT_SHARE=%s", secretHex))
+				if err := writeCmd.Run(); err != nil {
+					log.Fatalf("Failed writing new secret: %v", err)
+				}
+			}
+		case 2:
+			log.Fatalln("not finished :(")
+		case 3:
+			cmd := exec.Command("vpd", "-l")
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			cmd.Run()
+			fmt.Println("vpdran")
+		}
+
 	default:
-		log.Fatalf("Invalid value re run program!") // dumbass entered the wrong input laugh!
+		log.Fatalf("Invalid value re run program!") // dumbass entered the wrong input laugh!}
+
 	}
 }
 
@@ -197,10 +260,4 @@ func Logo() {
 	fmt.Println("╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝")
 }
 
-func grabVPD() {
-	cmd := exec.Command("vpd", "-l")
-	cmd.Stdout = os.Stdout // forward to terminal
-	cmd.Stderr = os.Stderr
-	cmd.Run()
-	fmt.Println("vpdran")
-}
+// note to self later
